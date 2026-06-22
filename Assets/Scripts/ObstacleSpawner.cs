@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class ObstacleSpawner : MonoBehaviour
 {
@@ -7,7 +8,10 @@ public class ObstacleSpawner : MonoBehaviour
     [Header("References")]
     public GameObject obstaclePrefab;
 
-    private Vector2Int obstaclePos;
+    public int obstacleCount = 1;
+
+    private List<Vector2Int> obstaclePositions = new List<Vector2Int>();
+    private List<GameObject> spawnedObstacles = new List<GameObject>();
 
     void Awake()
     {
@@ -16,28 +20,41 @@ public class ObstacleSpawner : MonoBehaviour
 
     void Start()
     {
-        SpawnObstacle();
+        SpawnObstacles();
     }
 
-    void SpawnObstacle()
+    void SpawnObstacles()
     {
-        Vector2Int center = new Vector2Int(GridManager.Instance.width / 2, GridManager.Instance.height / 2);
+        for (int i = 0; i < obstacleCount; i++)
+        {
+            Vector2Int pos = GetFreeCell();
+            obstaclePositions.Add(pos);
+
+            GameObject obs = Instantiate(obstaclePrefab,
+                GridManager.Instance.GridToWorld(pos), Quaternion.identity, transform);
+            spawnedObstacles.Add(obs);
+        }
+    }
+    Vector2Int GetFreeCell()
+    {
         Vector2Int pos;
         int attempts = 0;
+        Vector2Int center = new Vector2Int(GridManager.Instance.width / 2, GridManager.Instance.height / 2);
 
         do
         {
             pos = GridManager.Instance.GetRandomCell();
             attempts++;
         }
-        while (pos == center && attempts < 200); // avoid spawning on snake's start
+        while ((obstaclePositions.Contains(pos) || pos == center) && attempts < 200);
 
-        obstaclePos = pos;
-        Instantiate(obstaclePrefab, GridManager.Instance.GridToWorld(pos), Quaternion.identity, transform);
+        return pos;
     }
+
 
     public bool IsObstacle(Vector2Int gridPos)
     {
-        return gridPos == obstaclePos;
+        return obstaclePositions.Contains(gridPos);
+
     }
 }

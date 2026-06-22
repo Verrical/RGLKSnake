@@ -6,7 +6,7 @@ public class SnakeController : MonoBehaviour
 {
     public GameObject bodySegmentPrefab;
     public Transform bodyContainer;
-    public float moveInterval = 0.15f;
+    public float moveInterval = 0.1f;
     public float cooldown = 0.5f;
 
 
