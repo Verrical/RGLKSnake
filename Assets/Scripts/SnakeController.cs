@@ -8,6 +8,7 @@ public class SnakeController : MonoBehaviour
     public Transform bodyContainer;
     public float moveInterval = 0.1f;
     public float cooldown = 0.5f;
+    public float dodgetime = 0.3f;
 
 
     private Vector2Int gridPos;
@@ -18,6 +19,7 @@ public class SnakeController : MonoBehaviour
     private float moveTimer;
     private bool alive = true;
     private float cooldownTimer = 0f;
+    private float iframes = 0f;
 
     void Start()
     {
@@ -37,6 +39,8 @@ public class SnakeController : MonoBehaviour
 
         if (cooldownTimer > 0f)
         cooldownTimer -= Time.deltaTime;
+        if (iframes > 0f)
+        iframes -= Time.deltaTime;
         
         moveTimer += Time.deltaTime;
         if (moveTimer >= moveInterval)
@@ -44,6 +48,10 @@ public class SnakeController : MonoBehaviour
             moveTimer = 0f;
             Move();
         }
+    }
+    public bool cooldownCheck()
+    {
+        return iframes > 0f;
     }
 
     void HandleInput()
@@ -60,7 +68,7 @@ public class SnakeController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
             if (direction != Vector2Int.left) nextDirection = Vector2Int.right;
         if (Input.GetKeyDown(KeyCode.E) && cooldownTimer <= 0)
-            Shrink();    
+            Ability();    
     }
 
     void Move()
@@ -93,8 +101,16 @@ public class SnakeController : MonoBehaviour
         FoodSpawner.Instance.CheckEat(gridPos, this);
 
         if (ObstacleSpawner.Instance.IsObstacle(newPos)) {
-            Die();
-            return;
+            if (cooldownCheck() == true)
+            {
+                ObstacleSpawner.Instance.DestroyObstacle(newPos);
+                GameManager.Instance.AddScore(70);
+            }
+            else
+            {
+                Die();
+            }
+
         }
     }
 
@@ -117,18 +133,15 @@ public class SnakeController : MonoBehaviour
     {
         return segmentPositions;
     }
-    public void Shrink()
+    public void Ability()
 {
     if (bodySegments.Count == 0) return;
 
     int lastIndex = bodySegments.Count - 1;
-
-    // Destroy the tail segment's GameObject
     Destroy(bodySegments[lastIndex].gameObject);
-
-    // Remove it from tracking lists
     bodySegments.RemoveAt(lastIndex);
     segmentPositions.RemoveAt(segmentPositions.Count - 1);
     cooldownTimer = cooldown;
+    iframes = dodgetime;
 }
 }

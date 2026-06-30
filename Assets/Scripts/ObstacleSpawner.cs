@@ -57,4 +57,16 @@ public class ObstacleSpawner : MonoBehaviour
         return obstaclePositions.Contains(gridPos);
 
     }
+    
+    public void DestroyObstacle(Vector2Int gridPos)
+    {
+        int index = obstaclePositions.IndexOf(gridPos);
+        if (index == -1) return;
+
+        Destroy(spawnedObstacles[index]);
+        obstaclePositions.RemoveAt(index);
+        spawnedObstacles.RemoveAt(index);
+    }
+
+    
 }

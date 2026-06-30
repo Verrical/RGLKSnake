@@ -22,7 +22,7 @@ public class FoodSpawner : MonoBehaviour
         if (headPos == foodGridPos)
         {
             snake.Grow();
-            GameManager.Instance.AddScore();
+            GameManager.Instance.AddScore(100);
             SpawnFood(snake.GetOccupiedCells());
         }
     }
@@ -32,7 +32,6 @@ public class FoodSpawner : MonoBehaviour
         Vector2Int pos;
         int attempts = 0;
 
-        // Find a free cell
         do {
             pos = GridManager.Instance.GetRandomCell();
             attempts++;
