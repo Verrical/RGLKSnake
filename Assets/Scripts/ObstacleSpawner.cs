@@ -4,10 +4,7 @@ using System.Collections.Generic;
 public class ObstacleSpawner : MonoBehaviour
 {
     public static ObstacleSpawner Instance;
-
-    [Header("References")]
-    public GameObject obstaclePrefab;
-
+       public GameObject obstaclePrefab;
     public int obstacleCount = 1;
 
     private List<Vector2Int> obstaclePositions = new List<Vector2Int>();
