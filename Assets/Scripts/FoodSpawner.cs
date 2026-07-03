@@ -30,13 +30,7 @@ public class FoodSpawner : MonoBehaviour
     void SpawnFood(List<Vector2Int> occupied)
     {
         Vector2Int pos;
-        int attempts = 0;
-
-        do {
-            pos = GridManager.Instance.GetRandomCell();
-            attempts++;
-        } while (occupied != null && occupied.Contains(pos) && attempts < 200);
-
+        pos = GridManager.Instance.GetRandomCell();
         foodGridPos = pos;
         transform.position = GridManager.Instance.GridToWorld(pos);
     }

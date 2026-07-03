@@ -3,8 +3,6 @@ using UnityEngine;
 public class PauseManager : MonoBehaviour
 {
     public static PauseManager Instance;
-
-    [Header("UI")]
     public GameObject pausePanel;
 
     private bool isPaused = false;
@@ -25,6 +23,13 @@ public class PauseManager : MonoBehaviour
         isPaused = !isPaused;
         pausePanel.SetActive(isPaused);
         Time.timeScale = isPaused ? 0f : 1f;
+
+        if (isPaused)
+        AudioManager.Instance.OnPause();
+        else
+        AudioManager.Instance.OnResume();
+        
+          
     }
 
     public void Resume()

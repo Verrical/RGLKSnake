@@ -1,15 +1,15 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-
-    [Header("UI")]
-    public Text scoreText;     
+    public TMP_Text scoreText;     
     public GameObject gameOverPanel; 
-
+    public TMP_Text gameOverScoreText;  
+    public TMP_Text gameOverHighScoreText; 
     private int score = 0;
 
     void Awake()
@@ -35,7 +35,20 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        int highScore = PlayerPrefs.GetInt("HighScore", 0);
+        if (score > highScore)
+        {
+            highScore = score;
+            PlayerPrefs.SetInt("HighScore", highScore);
+            PlayerPrefs.Save();
+        }
+
+        AudioManager.Instance.OnGameOver();
+        if (gameOverScoreText) gameOverScoreText.text = "Score: " + score;
+        if (gameOverHighScoreText) gameOverHighScoreText.text = "Best: " + highScore;
         if (gameOverPanel) gameOverPanel.SetActive(true);
+
+
     }
 
     public void ReturnToMainMenu()

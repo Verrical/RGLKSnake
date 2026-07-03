@@ -143,5 +143,6 @@ public class SnakeController : MonoBehaviour
     segmentPositions.RemoveAt(segmentPositions.Count - 1);
     cooldownTimer = cooldown;
     iframes = dodgetime;
+    GameManager.Instance.AddScore(-20);
 }
 }
